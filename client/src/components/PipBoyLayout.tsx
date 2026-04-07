@@ -1,6 +1,7 @@
 import { type ReactNode } from "react";
 import { Link, useLocation } from "react-router-dom";
 
+
 type TabItem = {
   label: string;
   href: string;
@@ -17,12 +18,14 @@ const PipBoyLayout = ({ children }: { children: ReactNode }) => {
   const location = useLocation();
 
   return (
-    <div className="h-screen w-screen flex items-center justify-center bg-black p-4 overflow-hidden">
+    <div className="h-screen w-screen flex items-center justify-center bg-black p-4 overflow-hidden relative">
+      {/* Vault-Tec blueprint grid background */}
+      <div className="vault-grid" />
       {/* Noise grain overlay */}
       <div className="noise-overlay" />
 
       {/* Main Pip-Boy frame */}
-      <div className="crt-screen crt-flicker w-full h-full max-w-[1400px] max-h-[900px] flex flex-col pip-frame p-8">
+      <div className="crt-screen crt-flicker w-full h-full max-w-[1400px] max-h-[900px] flex flex-col pip-frame p-8 relative z-10">
         {/* Header bar */}
         <div className="flex items-center justify-between px-6 pt-4 pb-2">
           <div className="flex items-center gap-3">
