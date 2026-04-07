@@ -1,1 +1,555 @@
 @import "tailwindcss";
+
+/* ========================================
+   FALLOUT PIP-BOY THEME
+   ======================================== */
+
+:root {
+  --pip-green: #00ff41;
+  --pip-green-dim: #00cc33;
+  --pip-green-dark: #003300;
+  --pip-green-glow: #00ff4180;
+  --pip-amber: #ff9900;
+  --pip-amber-dim: #cc7a00;
+  --pip-amber-glow: #ff990060;
+  --pip-bg: #0b1a0b;
+  --pip-bg-light: #0f2210;
+  --pip-bg-panel: #091408;
+  --pip-border: #1e4a1e;
+  --pip-border-bright: #00ff4140;
+  --pip-red: #ff3333;
+  --pip-blue: #33ccff;
+  --font-mono: "Share Tech Mono", monospace;
+  --font-terminal: "VT323", monospace;
+  --scanline-opacity: 0.04;
+  --crt-curve: 2px;
+}
+
+/* ========================================
+   BASE RESET & BODY
+   ======================================== */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scrollbar-width: thin;
+  scrollbar-color: var(--pip-green-dim) var(--pip-bg);
+}
+
+body {
+  background: #000000;
+  color: var(--pip-green);
+  font-family: var(--font-mono);
+  overflow: hidden;
+  min-height: 100vh;
+}
+
+::selection {
+  background: var(--pip-green);
+  color: var(--pip-bg);
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--pip-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--pip-green-dark);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--pip-green-dim);
+}
+
+/* ========================================
+   CRT SCREEN EFFECT
+   ======================================== */
+
+.crt-screen {
+  position: relative;
+  background: var(--pip-bg);
+  border-radius: var(--crt-curve);
+  overflow: hidden;
+  background-image: radial-gradient(
+    ellipse at 50% 50%,
+    rgba(0, 255, 65, 0.02) 0%,
+    transparent 80%
+  );
+}
+
+.crt-screen::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 255, 65, var(--scanline-opacity)) 2px,
+    rgba(0, 255, 65, var(--scanline-opacity)) 4px
+  );
+  pointer-events: none;
+  z-index: 50;
+  animation: scanline-scroll 8s linear infinite;
+}
+
+.crt-screen::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 60%,
+    rgba(0, 0, 0, 0.4) 100%
+  );
+  pointer-events: none;
+  z-index: 51;
+}
+
+@keyframes scanline-scroll {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 0 100vh;
+  }
+}
+
+/* ========================================
+   FLICKER EFFECT
+   ======================================== */
+
+@keyframes flicker {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  92% {
+    opacity: 1;
+  }
+  93% {
+    opacity: 0.8;
+  }
+  94% {
+    opacity: 1;
+  }
+  96% {
+    opacity: 0.9;
+  }
+  97% {
+    opacity: 1;
+  }
+}
+
+.crt-flicker {
+  animation: flicker 4s infinite;
+}
+
+/* ========================================
+   TEXT GLOW EFFECTS
+   ======================================== */
+
+.text-glow {
+  text-shadow: 0 0 5px var(--pip-green-glow), 0 0 10px var(--pip-green-glow),
+    0 0 20px rgba(0, 255, 65, 0.15);
+}
+
+.text-glow-strong {
+  text-shadow: 0 0 7px var(--pip-green-glow), 0 0 15px var(--pip-green-glow),
+    0 0 30px rgba(0, 255, 65, 0.2), 0 0 50px rgba(0, 255, 65, 0.1);
+}
+
+.text-glow-amber {
+  text-shadow: 0 0 5px var(--pip-amber-glow), 0 0 10px var(--pip-amber-glow),
+    0 0 20px rgba(255, 153, 0, 0.15);
+  color: var(--pip-amber);
+}
+
+/* ========================================
+   PIP-BOY FRAME
+   ======================================== */
+
+.pip-frame {
+  border: 2px solid var(--pip-border);
+  border-radius: 8px;
+  background:
+    radial-gradient(ellipse at 50% 40%, rgba(0, 255, 65, 0.06) 0%, transparent 70%),
+    radial-gradient(ellipse at 50% 100%, rgba(0, 40, 0, 0.4) 0%, transparent 60%),
+    linear-gradient(180deg, #0d1f0d 0%, var(--pip-bg) 40%, #081208 100%);
+  box-shadow:
+    inset 0 0 80px rgba(0, 255, 65, 0.04),
+    inset 0 0 20px rgba(0, 60, 0, 0.3),
+    0 0 20px rgba(0, 255, 65, 0.06),
+    0 0 2px rgba(0, 255, 65, 0.15);
+}
+
+.pip-frame-inner {
+  border: 1px solid var(--pip-border);
+  border-radius: 4px;
+  background: linear-gradient(
+    180deg,
+    var(--pip-bg-panel) 0%,
+    rgba(0, 20, 0, 0.6) 100%
+  );
+  box-shadow: inset 0 0 12px rgba(0, 40, 0, 0.2);
+}
+
+/* ========================================
+   PIP-BOY TAB NAVIGATION
+   ======================================== */
+
+.pip-tab {
+  position: relative;
+  padding: 8px 24px;
+  color: var(--pip-green-dim);
+  font-family: var(--font-terminal);
+  font-size: 1.25rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-decoration: none;
+  border: 1px solid transparent;
+  background: transparent;
+}
+
+.pip-tab:hover {
+  color: var(--pip-green);
+  text-shadow: 0 0 8px var(--pip-green-glow);
+}
+
+.pip-tab.active {
+  color: var(--pip-green);
+  text-shadow: 0 0 8px var(--pip-green-glow);
+  border-bottom: 2px solid var(--pip-green);
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(0, 255, 65, 0.05)
+  );
+}
+
+/* ========================================
+   STAT BARS (S.P.E.C.I.A.L.)
+   ======================================== */
+
+.stat-bar-track {
+  height: 16px;
+  background: var(--pip-bg-panel);
+  border: 1px solid var(--pip-border);
+  border-radius: 2px;
+  overflow: hidden;
+  position: relative;
+}
+
+.stat-bar-fill {
+  height: 100%;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--pip-green) 0px,
+    var(--pip-green) 8px,
+    transparent 8px,
+    transparent 10px
+  );
+  box-shadow: 0 0 10px var(--pip-green-glow);
+  transition: width 1s ease-out;
+  position: relative;
+}
+
+.stat-bar-fill::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+}
+
+/* ========================================
+   QUEST/PROJECT CARDS
+   ======================================== */
+
+.quest-card {
+  border: 1px solid var(--pip-border);
+  background: var(--pip-bg-panel);
+  padding: 20px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.quest-card:hover {
+  border-color: var(--pip-green-dim);
+  box-shadow: 0 0 15px rgba(0, 255, 65, 0.08),
+    inset 0 0 15px rgba(0, 255, 65, 0.03);
+}
+
+.quest-card::before {
+  content: ">";
+  position: absolute;
+  left: 8px;
+  top: 20px;
+  color: var(--pip-green);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  text-shadow: 0 0 5px var(--pip-green-glow);
+}
+
+.quest-card:hover::before {
+  opacity: 1;
+}
+
+/* ========================================
+   TYPING CURSOR
+   ======================================== */
+
+@keyframes blink-cursor {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  51%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.typing-cursor::after {
+  content: "█";
+  animation: blink-cursor 1s step-end infinite;
+  color: var(--pip-green);
+  margin-left: 2px;
+}
+
+/* ========================================
+   TERMINAL INPUT
+   ======================================== */
+
+.terminal-input {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--pip-border);
+  color: var(--pip-green);
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  padding: 8px 0;
+  outline: none;
+  width: 100%;
+  caret-color: var(--pip-green);
+  transition: border-color 0.2s ease;
+}
+
+.terminal-input:focus {
+  border-bottom-color: var(--pip-green);
+  box-shadow: 0 1px 0 0 var(--pip-green-glow);
+}
+
+.terminal-input::placeholder {
+  color: var(--pip-green-dark);
+  opacity: 0.6;
+}
+
+/* ========================================
+   BADGE / TAG
+   ======================================== */
+
+.pip-badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border: 1px solid var(--pip-green-dim);
+  color: var(--pip-green);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  border-radius: 2px;
+}
+
+.pip-badge-amber {
+  border-color: var(--pip-amber-dim);
+  color: var(--pip-amber);
+}
+
+/* ========================================
+   BUTTON
+   ======================================== */
+
+.pip-button {
+  padding: 10px 28px;
+  border: 1px solid var(--pip-green-dim);
+  background: transparent;
+  color: var(--pip-green);
+  font-family: var(--font-terminal);
+  font-size: 1.15rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  position: relative;
+}
+
+.pip-button:hover {
+  background: rgba(0, 255, 65, 0.1);
+  border-color: var(--pip-green);
+  box-shadow: 0 0 15px rgba(0, 255, 65, 0.15),
+    inset 0 0 15px rgba(0, 255, 65, 0.05);
+  text-shadow: 0 0 8px var(--pip-green-glow);
+}
+
+.pip-button:active {
+  background: rgba(0, 255, 65, 0.2);
+}
+
+/* ========================================
+   DIVIDER / DECORATIVE LINE
+   ======================================== */
+
+.pip-divider {
+  border: none;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--pip-border) 15%,
+    var(--pip-green-dim) 50%,
+    var(--pip-border) 85%,
+    transparent
+  );
+  margin: 24px 0;
+}
+
+/* ========================================
+   BOOT SEQUENCE ANIMATION
+   ======================================== */
+
+@keyframes boot-line {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.boot-line {
+  opacity: 0;
+  animation: boot-line 0.3s ease forwards;
+}
+
+/* ========================================
+   NOISE/GRAIN OVERLAY
+   ======================================== */
+
+@keyframes grain {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  10% {
+    transform: translate(-2%, -2%);
+  }
+  30% {
+    transform: translate(1%, -1%);
+  }
+  50% {
+    transform: translate(-1%, 2%);
+  }
+  70% {
+    transform: translate(3%, 1%);
+  }
+  90% {
+    transform: translate(-1%, -1%);
+  }
+}
+
+.noise-overlay {
+  position: fixed;
+  inset: 0;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-size: 256px;
+  pointer-events: none;
+  z-index: 100;
+  animation: grain 0.5s steps(1) infinite;
+}
+
+/* ========================================
+   RESPONSIVE UTILITIES
+   ======================================== */
+
+@media (max-width: 768px) {
+  .pip-tab {
+    padding: 6px 12px;
+    font-size: 1rem;
+  }
+}
+
+/* ========================================
+   VAULT BOY MARKER (decorative list bullet)
+   ======================================== */
+
+.vault-list li::before {
+  content: "[ ] ";
+  color: var(--pip-green-dim);
+}
+
+.vault-list li.completed::before {
+  content: "[X] ";
+  color: var(--pip-green);
+}
+
+/* ========================================
+   PAGE TRANSITION
+   ======================================== */
+
+@keyframes page-in {
+  from {
+    opacity: 0;
+    filter: brightness(2);
+  }
+  to {
+    opacity: 1;
+    filter: brightness(1);
+  }
+}
+
+.page-enter {
+  animation: page-in 0.4s ease-out;
+}
+
+/* ========================================
+   STATUS INDICATOR
+   ======================================== */
+
+.status-online {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background: var(--pip-green);
+  border-radius: 50%;
+  box-shadow: 0 0 6px var(--pip-green-glow);
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 6px var(--pip-green-glow);
+  }
+  50% {
+    box-shadow: 0 0 12px var(--pip-green-glow), 0 0 20px rgba(0, 255, 65, 0.2);
+  }
+}
