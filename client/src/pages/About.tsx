@@ -75,19 +75,19 @@ const StatBar = ({ stat, index }: { stat: Stat; index: number }) => {
   }, [stat.value, index]);
 
   return (
-    <div className="flex items-start gap-4 group">
+    <div className="flex items-start gap-3 sm:gap-4 group">
       <div
-        className="w-10 h-10 flex items-center justify-center border border-[var(--pip-border)] text-glow-strong shrink-0"
+        className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center border border-[var(--pip-border)] text-glow-strong shrink-0 group-hover:border-[var(--pip-green-dim)] transition-colors"
         style={{
           fontFamily: "var(--font-terminal)",
-          fontSize: "1.5rem",
+          fontSize: "1.3rem",
           background: "var(--pip-bg-panel)",
         }}
       >
         {stat.name}
       </div>
-      <div className="flex-1 space-y-1">
-        <div className="flex justify-between items-baseline">
+      <div className="flex-1 min-w-0 space-y-1">
+        <div className="flex justify-between items-baseline gap-2">
           <span
             className="text-glow tracking-wider"
             style={{ fontFamily: "var(--font-terminal)", fontSize: "1.1rem" }}
@@ -95,7 +95,7 @@ const StatBar = ({ stat, index }: { stat: Stat; index: number }) => {
             {stat.full}
           </span>
           <span
-            className="text-glow-strong"
+            className="text-glow-strong shrink-0"
             style={{ fontFamily: "var(--font-terminal)", fontSize: "1.3rem" }}
           >
             {stat.value}
@@ -105,6 +105,11 @@ const StatBar = ({ stat, index }: { stat: Stat; index: number }) => {
           <div
             className="stat-bar-fill"
             style={{ width: `${width}%` }}
+            role="progressbar"
+            aria-valuenow={stat.value}
+            aria-valuemin={0}
+            aria-valuemax={10}
+            aria-label={`${stat.full}: ${stat.value} out of 10`}
           />
         </div>
         <p
@@ -130,7 +135,7 @@ const About = () => {
           className="text-glow-strong"
           style={{
             fontFamily: "var(--font-terminal)",
-            fontSize: "2rem",
+            fontSize: "clamp(1.5rem, 3vw, 2rem)",
             letterSpacing: "3px",
           }}
         >
@@ -151,7 +156,7 @@ const About = () => {
       <hr className="pip-divider" />
 
       {/* Bio section */}
-      <div className="pip-frame-inner p-5">
+      <div className="pip-frame-inner p-5 sm:p-6">
         <div
           className="mb-3"
           style={{
@@ -197,7 +202,7 @@ const About = () => {
       {/* Perks section */}
       <div>
         <h3
-          className="text-glow mb-4"
+          className="text-glow mb-5"
           style={{
             fontFamily: "var(--font-terminal)",
             fontSize: "1.4rem",
@@ -206,20 +211,20 @@ const About = () => {
         >
           PERKS UNLOCKED
         </h3>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
           {perks.map((perk) => (
             <div
               key={perk.name}
-              className="pip-frame-inner p-5 text-center hover:border-[var(--pip-green-dim)] transition-colors cursor-default"
+              className="pip-frame-inner p-4 sm:p-5 text-center hover:border-[var(--pip-green-dim)] transition-all duration-200 cursor-default group"
             >
               <div
-                className="text-2xl mb-2"
+                className="text-2xl mb-2 transition-transform duration-200 group-hover:scale-110"
                 style={{ color: "var(--pip-amber)" }}
               >
                 {perk.icon}
               </div>
               <div
-                className="text-sm tracking-wider text-glow"
+                className="text-xs sm:text-sm tracking-wider text-glow"
                 style={{ fontFamily: "var(--font-terminal)" }}
               >
                 {perk.name}
@@ -227,6 +232,7 @@ const About = () => {
               <div
                 className="text-xs mt-2"
                 style={{ color: "var(--pip-green-dim)" }}
+                aria-label={`Skill level ${perk.level} of 3`}
               >
                 {"★".repeat(perk.level)}
                 {"☆".repeat(3 - perk.level)}

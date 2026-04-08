@@ -18,6 +18,9 @@ const Contact = () => {
     }, 2000);
   };
 
+  const isFormValid =
+    formData.name.trim() && formData.email.trim() && formData.message.trim();
+
   return (
     <div className="page-enter space-y-8">
       {/* Header */}
@@ -26,7 +29,7 @@ const Contact = () => {
           className="text-glow-strong"
           style={{
             fontFamily: "var(--font-terminal)",
-            fontSize: "2rem",
+            fontSize: "clamp(1.5rem, 3vw, 2rem)",
             letterSpacing: "3px",
           }}
         >
@@ -47,7 +50,7 @@ const Contact = () => {
       <hr className="pip-divider" />
 
       {/* Contact channels */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {[
           {
             label: "EMAIL",
@@ -73,10 +76,11 @@ const Contact = () => {
             href={channel.href}
             target="_blank"
             rel="noopener noreferrer"
-            className="pip-frame-inner p-4 block hover:border-[var(--pip-green-dim)] transition-all group"
+            className="pip-frame-inner p-5 block transition-all duration-200 group hover:border-[var(--pip-green-dim)]"
+            aria-label={`Contact via ${channel.label}`}
           >
             <div
-              className="text-lg mb-1 text-glow"
+              className="text-lg mb-2 text-glow group-hover:text-glow-strong transition-all"
               style={{ fontFamily: "var(--font-terminal)" }}
             >
               {channel.icon}
@@ -108,7 +112,7 @@ const Contact = () => {
       {/* Terminal message form */}
       <div>
         <div
-          className="flex items-center gap-2 mb-4"
+          className="flex items-center gap-2 mb-5"
           style={{
             fontFamily: "var(--font-terminal)",
             fontSize: "1.2rem",
@@ -120,7 +124,7 @@ const Contact = () => {
         </div>
 
         {submitted ? (
-          <div className="pip-frame-inner p-6 text-center space-y-3">
+          <div className="pip-frame-inner p-8 text-center space-y-4">
             <div
               className="text-glow-strong"
               style={{
@@ -131,16 +135,17 @@ const Contact = () => {
             >
               TRANSMISSION SENT
             </div>
-            <p
+            <div
               style={{
                 fontFamily: "var(--font-mono)",
                 fontSize: "0.85rem",
                 color: "var(--pip-green-dim)",
+                lineHeight: "1.6",
               }}
             >
               Your message has been received. I'll respond on this frequency
               shortly.
-            </p>
+            </div>
             <button
               onClick={() => {
                 setSubmitted(false);
@@ -152,10 +157,11 @@ const Contact = () => {
             </button>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label
-                className="block mb-1 text-xs tracking-widest"
+                htmlFor="name"
+                className="block mb-2 text-xs tracking-widest"
                 style={{
                   fontFamily: "var(--font-terminal)",
                   color: "var(--pip-green-dim)",
@@ -164,8 +170,14 @@ const Contact = () => {
                 CALLSIGN (NAME)
               </label>
               <div className="flex items-center gap-2">
-                <span style={{ color: "var(--pip-green)" }}>{">"}</span>
+                <span
+                  style={{ color: "var(--pip-green)" }}
+                  aria-hidden="true"
+                >
+                  {">"}
+                </span>
                 <input
+                  id="name"
                   type="text"
                   className="terminal-input"
                   placeholder="Enter your callsign..."
@@ -174,13 +186,15 @@ const Contact = () => {
                     setFormData((p) => ({ ...p, name: e.target.value }))
                   }
                   required
+                  autoComplete="name"
                 />
               </div>
             </div>
 
             <div>
               <label
-                className="block mb-1 text-xs tracking-widest"
+                htmlFor="email"
+                className="block mb-2 text-xs tracking-widest"
                 style={{
                   fontFamily: "var(--font-terminal)",
                   color: "var(--pip-green-dim)",
@@ -189,8 +203,14 @@ const Contact = () => {
                 FREQUENCY (EMAIL)
               </label>
               <div className="flex items-center gap-2">
-                <span style={{ color: "var(--pip-green)" }}>{">"}</span>
+                <span
+                  style={{ color: "var(--pip-green)" }}
+                  aria-hidden="true"
+                >
+                  {">"}
+                </span>
                 <input
+                  id="email"
                   type="email"
                   className="terminal-input"
                   placeholder="your@frequency.com"
@@ -199,13 +219,15 @@ const Contact = () => {
                     setFormData((p) => ({ ...p, email: e.target.value }))
                   }
                   required
+                  autoComplete="email"
                 />
               </div>
             </div>
 
             <div>
               <label
-                className="block mb-1 text-xs tracking-widest"
+                htmlFor="message"
+                className="block mb-2 text-xs tracking-widest"
                 style={{
                   fontFamily: "var(--font-terminal)",
                   color: "var(--pip-green-dim)",
@@ -214,10 +236,14 @@ const Contact = () => {
                 MESSAGE
               </label>
               <div className="flex items-start gap-2">
-                <span style={{ color: "var(--pip-green)", marginTop: "8px" }}>
+                <span
+                  style={{ color: "var(--pip-green)", marginTop: "10px" }}
+                  aria-hidden="true"
+                >
                   {">"}
                 </span>
                 <textarea
+                  id="message"
                   className="terminal-input resize-none"
                   rows={5}
                   placeholder="Type your message..."
@@ -231,20 +257,33 @@ const Contact = () => {
               </div>
             </div>
 
-            <button
-              type="submit"
-              className="pip-button"
-              disabled={transmitting}
-            >
-              {transmitting ? (
-                <span className="tracking-widest">
-                  TRANSMITTING
-                  <span className="typing-cursor" />
+            <div className="flex items-center gap-4">
+              <button
+                type="submit"
+                className="pip-button"
+                disabled={transmitting || !isFormValid}
+              >
+                {transmitting ? (
+                  <span className="tracking-widest">
+                    TRANSMITTING
+                    <span className="typing-cursor" />
+                  </span>
+                ) : (
+                  "SEND TRANSMISSION"
+                )}
+              </button>
+              {!isFormValid && formData.name && (
+                <span
+                  className="text-xs"
+                  style={{
+                    fontFamily: "var(--font-mono)",
+                    color: "var(--pip-green-dark)",
+                  }}
+                >
+                  Fill all fields to transmit
                 </span>
-              ) : (
-                "SEND TRANSMISSION"
               )}
-            </button>
+            </div>
           </form>
         )}
       </div>
@@ -257,6 +296,7 @@ const Contact = () => {
           fontSize: "0.75rem",
           color: "var(--pip-green-dark)",
         }}
+        aria-hidden="true"
       >
         ╔══════════════════════════════════╗
         <br />

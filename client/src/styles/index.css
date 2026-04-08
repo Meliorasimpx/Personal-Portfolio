@@ -219,23 +219,52 @@ body {
   transition: all 0.15s ease;
   text-decoration: none;
   border: 1px solid transparent;
+  border-bottom: 2px solid transparent;
   background: transparent;
+  outline: none;
 }
 
 .pip-tab:hover {
   color: var(--pip-green);
   text-shadow: 0 0 8px var(--pip-green-glow);
+  background: rgba(0, 255, 65, 0.03);
+}
+
+.pip-tab:focus-visible {
+  outline: 1px solid var(--pip-green);
+  outline-offset: -2px;
+  text-shadow: 0 0 8px var(--pip-green-glow);
 }
 
 .pip-tab.active {
   color: var(--pip-green);
-  text-shadow: 0 0 8px var(--pip-green-glow);
+  text-shadow: 0 0 10px var(--pip-green-glow);
   border-bottom: 2px solid var(--pip-green);
   background: linear-gradient(
     to bottom,
     transparent,
-    rgba(0, 255, 65, 0.05)
+    rgba(0, 255, 65, 0.06)
   );
+}
+
+.pip-tab.active::after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  left: 20%;
+  right: 20%;
+  height: 1px;
+  background: var(--pip-green);
+  box-shadow: 0 0 8px var(--pip-green-glow), 0 0 16px rgba(0, 255, 65, 0.15);
+}
+
+/* Hide scrollbar on tab overflow */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }
 
 /* ========================================
@@ -285,14 +314,21 @@ body {
   background: var(--pip-bg-panel);
   padding: 20px;
   border-radius: 4px;
-  transition: all 0.2s ease;
+  transition: all 0.25s ease;
   position: relative;
+  cursor: default;
 }
 
 .quest-card:hover {
   border-color: var(--pip-green-dim);
+  background: linear-gradient(
+    90deg,
+    rgba(0, 255, 65, 0.04),
+    transparent 30%
+  ), var(--pip-bg-panel);
   box-shadow: 0 0 15px rgba(0, 255, 65, 0.08),
     inset 0 0 15px rgba(0, 255, 65, 0.03);
+  transform: translateX(4px);
 }
 
 .quest-card::before {
@@ -301,8 +337,9 @@ body {
   left: 8px;
   top: 20px;
   color: var(--pip-green);
+  font-family: var(--font-terminal);
   opacity: 0;
-  transition: opacity 0.2s ease;
+  transition: opacity 0.25s ease;
   text-shadow: 0 0 5px var(--pip-green-glow);
 }
 
@@ -343,21 +380,36 @@ body {
   color: var(--pip-green);
   font-family: var(--font-mono);
   font-size: 1rem;
-  padding: 8px 0;
+  padding: 10px 4px;
   outline: none;
   width: 100%;
   caret-color: var(--pip-green);
-  transition: border-color 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 .terminal-input:focus {
   border-bottom-color: var(--pip-green);
   box-shadow: 0 1px 0 0 var(--pip-green-glow);
+  background: rgba(0, 255, 65, 0.02);
+}
+
+.terminal-input:hover:not(:focus) {
+  border-bottom-color: var(--pip-green-dark);
 }
 
 .terminal-input::placeholder {
   color: var(--pip-green-dark);
-  opacity: 0.6;
+  opacity: 0.5;
+  transition: opacity 0.2s ease;
+}
+
+.terminal-input:focus::placeholder {
+  opacity: 0.3;
+}
+
+.terminal-input:invalid:not(:placeholder-shown) {
+  border-bottom-color: var(--pip-red);
+  box-shadow: 0 1px 0 0 rgba(255, 51, 51, 0.4);
 }
 
 /* ========================================
@@ -397,6 +449,7 @@ body {
   cursor: pointer;
   transition: all 0.15s ease;
   position: relative;
+  outline: none;
 }
 
 .pip-button:hover {
@@ -407,8 +460,27 @@ body {
   text-shadow: 0 0 8px var(--pip-green-glow);
 }
 
+.pip-button:focus-visible {
+  outline: 1px solid var(--pip-green);
+  outline-offset: 3px;
+  box-shadow: 0 0 15px rgba(0, 255, 65, 0.15);
+}
+
 .pip-button:active {
   background: rgba(0, 255, 65, 0.2);
+  transform: scale(0.98);
+}
+
+.pip-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  border-color: var(--pip-green-dark);
+}
+
+.pip-button:disabled:hover {
+  background: transparent;
+  box-shadow: none;
+  text-shadow: none;
 }
 
 /* ========================================
@@ -552,8 +624,33 @@ body {
 
 @media (max-width: 768px) {
   .pip-tab {
-    padding: 6px 12px;
-    font-size: 1rem;
+    padding: 6px 14px;
+    font-size: 0.95rem;
+    letter-spacing: 1px;
+  }
+
+  .pip-divider {
+    margin: 16px 0;
+  }
+
+  .stat-bar-track {
+    height: 12px;
+  }
+
+  .quest-card {
+    padding: 16px;
+  }
+
+  .quest-card:hover {
+    transform: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .pip-tab {
+    padding: 6px 10px;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
   }
 }
 

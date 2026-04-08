@@ -65,22 +65,23 @@ const quests: Quest[] = [
 const statusConfig = {
   completed: {
     label: "[COMPLETED]",
-    color: "var(--pip-green)",
     badge: "pip-badge",
   },
   active: {
     label: "[ACTIVE]",
-    color: "var(--pip-amber)",
     badge: "pip-badge pip-badge-amber",
   },
   "side-quest": {
     label: "[SIDE QUEST]",
-    color: "var(--pip-green-dim)",
     badge: "pip-badge",
   },
 };
 
 const Projects = () => {
+  const completed = quests.filter((q) => q.status === "completed").length;
+  const active = quests.filter((q) => q.status === "active").length;
+  const side = quests.filter((q) => q.status === "side-quest").length;
+
   return (
     <div className="page-enter space-y-8">
       {/* Header */}
@@ -89,7 +90,7 @@ const Projects = () => {
           className="text-glow-strong"
           style={{
             fontFamily: "var(--font-terminal)",
-            fontSize: "2rem",
+            fontSize: "clamp(1.5rem, 3vw, 2rem)",
             letterSpacing: "3px",
           }}
         >
@@ -110,24 +111,25 @@ const Projects = () => {
       <hr className="pip-divider" />
 
       {/* Quest summary */}
-      <div className="flex gap-6" style={{ fontFamily: "var(--font-mono)", fontSize: "0.85rem" }}>
+      <div
+        className="flex flex-wrap gap-4 sm:gap-6"
+        style={{ fontFamily: "var(--font-mono)", fontSize: "0.85rem" }}
+      >
         <span>
-          <span style={{ color: "var(--pip-green)" }}>
-            {quests.filter((q) => q.status === "completed").length}
+          <span className="text-glow" style={{ color: "var(--pip-green)" }}>
+            {completed}
           </span>{" "}
           Completed
         </span>
         <span>
-          <span style={{ color: "var(--pip-amber)" }}>
-            {quests.filter((q) => q.status === "active").length}
+          <span className="text-glow-amber" style={{ color: "var(--pip-amber)" }}>
+            {active}
           </span>{" "}
           Active
         </span>
         <span>
-          <span style={{ color: "var(--pip-green-dim)" }}>
-            {quests.filter((q) => q.status === "side-quest").length}
-          </span>{" "}
-          Side Quests
+          <span style={{ color: "var(--pip-green-dim)" }}>{side}</span> Side
+          Quests
         </span>
       </div>
 
@@ -136,20 +138,18 @@ const Projects = () => {
         {quests.map((quest) => {
           const config = statusConfig[quest.status];
           return (
-            <div key={quest.name} className="quest-card pl-7">
-              <div className="flex items-start justify-between gap-4 mb-2">
-                <div>
-                  <h3
-                    className="text-glow"
-                    style={{
-                      fontFamily: "var(--font-terminal)",
-                      fontSize: "1.3rem",
-                      letterSpacing: "1px",
-                    }}
-                  >
-                    {quest.name}
-                  </h3>
-                </div>
+            <div key={quest.name} className="quest-card pl-6 sm:pl-7">
+              <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2 sm:gap-4 mb-3">
+                <h3
+                  className="text-glow"
+                  style={{
+                    fontFamily: "var(--font-terminal)",
+                    fontSize: "1.3rem",
+                    letterSpacing: "1px",
+                  }}
+                >
+                  {quest.name}
+                </h3>
                 <div className="flex items-center gap-3 shrink-0">
                   <span className={config.badge}>{config.label}</span>
                   <span
@@ -165,23 +165,23 @@ const Projects = () => {
               </div>
 
               <p
-                className="mb-3"
+                className="mb-4"
                 style={{
                   fontFamily: "var(--font-mono)",
                   fontSize: "0.85rem",
                   color: "var(--pip-green-dim)",
-                  lineHeight: "1.6",
+                  lineHeight: "1.7",
                 }}
               >
                 {quest.description}
               </p>
 
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                 <div className="flex gap-2 flex-wrap">
                   {quest.tech.map((t) => (
                     <span
                       key={t}
-                      className="text-xs px-2 py-0.5 border border-[var(--pip-border)] rounded-sm"
+                      className="text-xs px-2 py-0.5 border border-[var(--pip-border)] rounded-sm transition-colors hover:border-[var(--pip-green-dim)] hover:text-[var(--pip-green)]"
                       style={{
                         fontFamily: "var(--font-mono)",
                         color: "var(--pip-green-dim)",
@@ -194,8 +194,8 @@ const Projects = () => {
                 {quest.link && (
                   <a
                     href={quest.link}
-                    className="pip-button text-xs"
-                    style={{ padding: "4px 14px", fontSize: "0.8rem" }}
+                    className="pip-button text-xs shrink-0"
+                    style={{ padding: "5px 16px", fontSize: "0.8rem" }}
                   >
                     EXPLORE
                   </a>

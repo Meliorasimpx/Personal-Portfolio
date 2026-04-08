@@ -14,10 +14,15 @@ const bootLines = [
 ];
 
 const Home = () => {
-  const [bootComplete, setBoot] = useState(false);
-  const [visibleLines, setVisibleLines] = useState(0);
+  const alreadyBooted = sessionStorage.getItem("pip-booted") === "true";
+  const [bootComplete, setBoot] = useState(alreadyBooted);
+  const [visibleLines, setVisibleLines] = useState(
+    alreadyBooted ? bootLines.length : 0,
+  );
 
   useEffect(() => {
+    if (alreadyBooted) return;
+
     if (visibleLines < bootLines.length) {
       const timer = setTimeout(
         () => setVisibleLines((v) => v + 1),
@@ -25,36 +30,41 @@ const Home = () => {
       );
       return () => clearTimeout(timer);
     } else {
-      const timer = setTimeout(() => setBoot(true), 600);
+      const timer = setTimeout(() => {
+        setBoot(true);
+        sessionStorage.setItem("pip-booted", "true");
+      }, 600);
       return () => clearTimeout(timer);
     }
-  }, [visibleLines]);
+  }, [visibleLines, alreadyBooted]);
 
   const noop = useCallback(() => {}, []);
 
   return (
     <div className="page-enter">
       {/* Boot sequence */}
-      <div
-        className="mb-8"
-        style={{ fontFamily: "var(--font-mono)", fontSize: "0.85rem" }}
-      >
-        {bootLines.slice(0, visibleLines).map((line, i) => (
-          <div
-            key={i}
-            className="boot-line"
-            style={{
-              animationDelay: `${i * 0.05}s`,
-              color: line.startsWith(">")
-                ? "var(--pip-green)"
-                : "var(--pip-green-dim)",
-              minHeight: "1.4em",
-            }}
-          >
-            {line}
-          </div>
-        ))}
-      </div>
+      {!alreadyBooted && (
+        <div
+          className="mb-8"
+          style={{ fontFamily: "var(--font-mono)", fontSize: "0.85rem" }}
+        >
+          {bootLines.slice(0, visibleLines).map((line, i) => (
+            <div
+              key={i}
+              className="boot-line"
+              style={{
+                animationDelay: `${i * 0.05}s`,
+                color: line.startsWith(">")
+                  ? "var(--pip-green)"
+                  : "var(--pip-green-dim)",
+                minHeight: "1.4em",
+              }}
+            >
+              {line}
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* Main content after boot */}
       {bootComplete && (
@@ -65,35 +75,43 @@ const Home = () => {
               className="text-glow-strong"
               style={{
                 fontFamily: "var(--font-terminal)",
-                fontSize: "3.5rem",
+                fontSize: "clamp(2rem, 5vw, 3.5rem)",
                 letterSpacing: "4px",
                 lineHeight: 1.1,
               }}
             >
-              <TerminalText
-                text="MEINARD"
-                speed={80}
-                onComplete={noop}
-                showCursor={false}
-              />
+              {alreadyBooted ? (
+                "MEINARD"
+              ) : (
+                <TerminalText
+                  text="MEINARD"
+                  speed={80}
+                  onComplete={noop}
+                  showCursor={false}
+                />
+              )}
             </h1>
             <p
               className="text-glow"
               style={{
                 fontFamily: "var(--font-terminal)",
-                fontSize: "1.6rem",
+                fontSize: "clamp(1rem, 2.5vw, 1.6rem)",
                 color: "var(--pip-amber)",
                 letterSpacing: "3px",
               }}
             >
-              <TerminalText
-                text="FULL-STACK DEVELOPER"
-                speed={35}
-                delay={500}
-                showCursor={false}
-                className="text-glow-amber"
-                onComplete={noop}
-              />
+              {alreadyBooted ? (
+                <span className="text-glow-amber">FULL-STACK DEVELOPER</span>
+              ) : (
+                <TerminalText
+                  text="FULL-STACK DEVELOPER"
+                  speed={35}
+                  delay={500}
+                  showCursor={false}
+                  className="text-glow-amber"
+                  onComplete={noop}
+                />
+              )}
             </p>
           </div>
 
@@ -127,13 +145,16 @@ const Home = () => {
           </div>
 
           {/* Quick stats */}
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {[
               { label: "QUESTS COMPLETED", value: "15+", sub: "Projects" },
               { label: "XP GAINED", value: "3+", sub: "Years Experience" },
               { label: "PERKS UNLOCKED", value: "10+", sub: "Technologies" },
             ].map((stat) => (
-              <div key={stat.label} className="pip-frame-inner p-4 text-center">
+              <div
+                key={stat.label}
+                className="pip-frame-inner p-5 text-center hover:border-[var(--pip-green-dim)] transition-all duration-200"
+              >
                 <div
                   className="text-glow-strong"
                   style={{
